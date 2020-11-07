@@ -35,9 +35,9 @@ router.get('/:partner?/:site?', async function (req, res, next) {
 	}
 
 	if (success) {
-		res.cookie('partner', partner, { domain: '.playdragonfly.net', secure: true, httpOnly: true, sameSite: 'lax' }).redirect(`${redirectPage}`);
+		res.cookie('partner', partner, { domain: '.playdragonfly.net', secure: true, httpOnly: true, sameSite: 'lax' }).redirect(`${redirectPage}?utm_source=partner&utm_medium=partner&utm_campaign=${partner}&partner_status=success`);
 	} else {
-		res.redirect(`${redirectPage}?partner_error=not_found`);
+		res.redirect(`${redirectPage}?partner_status=failure&partner_error=not_found&partner_name=${partner}`);
 	}
 });
 
