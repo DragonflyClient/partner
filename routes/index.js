@@ -3,26 +3,41 @@ var router = express.Router();
 const axios = require('axios').default;
 
 /* GET home page. */
-router.get('/:partner?', async function (req, res, next) {
-	const { partner } = req.params;
+router.get('/:partner?/:site?', async function (req, res, next) {
+	const { partner, site } = req.params;
+	let redirectPage = 'https://playdragonfly.net/';
+	const availableSites = [
+		{
+			key: 'register',
+			site: 'https://playdragonfly.net/register'
+		},
+		{
+			key: 'store',
+			site: 'https://store.playdragonfly.net/'
+		}
+	];
+
+	availableSites.map(availableSite => {
+		if (site && availableSite.key === site.toLocaleLowerCase()) redirectPage = availableSite.site;
+	});
+
 	let success;
-	console.log(process.env.MASTER_PASSWORD.toString());
 	try {
 		const response = await axios.get(`https://api.playdragonfly.net/v1/partner/partners/name/${partner}`, {
 			auth: {
 				username: 'master',
-				password: process.env.MASTER_PASSWORD.toString()
+				password: process.env.MASTER_PASSWORD
 			}
 		});
 		success = response.data.success;
 	} catch (error) {
 		success = error.response.data.success;
 	}
-	console.log(success);
+
 	if (success) {
-		res.cookie('partner', partner).redirect(`https://playdragonfly.net/?utm_source=partner&utm_medium=partner&utm_campaign=${partner}`);
+		res.cookie('partner', partner).redirect(`${redirectPage}?utm_source=partner&utm_medium=partner&utm_campaign=${partner}&partner_success=true`);
 	} else {
-		res.redirect('https://playdragonfly.net/');
+		res.redirect(`${redirectPage}?partner_error=not_found`);
 	}
 });
 
