@@ -35,7 +35,7 @@ router.get('/:partner?/:site?', async function (req, res, next) {
 	}
 
 	if (success) {
-		res.cookie('partner', partner).redirect(`${redirectPage}?utm_source=partner&utm_medium=partner&utm_campaign=${partner}&partner_success=true`);
+		res.cookie('partner', partner, { domain: '.playdragonfly.net', secure: true, httpOnly: true, sameSite: 'lax' }).redirect(`${redirectPage}`);
 	} else {
 		res.redirect(`${redirectPage}?partner_error=not_found`);
 	}
