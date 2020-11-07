@@ -6,11 +6,12 @@ const axios = require('axios').default;
 router.get('/:partner?', async function (req, res, next) {
 	const { partner } = req.params;
 	let success;
+	console.log(process.env.MASTER_PASSWORD.toString());
 	try {
 		const response = await axios.get(`https://api.playdragonfly.net/v1/partner/partners/name/${partner}`, {
 			auth: {
 				username: 'master',
-				password: 'RQzp7XdIjE5YI5Z9fHRFRYSTSYT2NJNR4VR0E7I8'
+				password: process.env.MASTER_PASSWORD.toString()
 			}
 		});
 		success = response.data.success;
